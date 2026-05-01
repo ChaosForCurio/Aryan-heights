@@ -2,12 +2,12 @@ import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 
 const links = [
-  ["About", "#about"],
-  ["Rooms", "#rooms"],
-  ["Facilities", "#facilities"],
-  ["Mess", "#mess"],
-  ["Gallery", "#gallery"],
-  ["Visit", "#contact"],
+  ["About", "/#about"],
+  ["Rooms", "/rooms"],
+  ["Facilities", "/#facilities"],
+  ["Mess", "/#mess"],
+  ["Gallery", "/#gallery"],
+  ["Visit", "/#contact"],
 ];
 
 export const FullscreenMenu = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
@@ -30,7 +30,7 @@ export const FullscreenMenu = ({ open, onClose }: { open: boolean; onClose: () =
         <span className="font-display text-base">Aryan Heights — Menu</span>
         <button onClick={onClose} aria-label="Close menu" className="w-10 h-10 rounded-full border border-hairline flex items-center justify-center text-lg hover:bg-ivory hover:text-ink transition-colors rotate-45">+</button>
       </div>
-      <div className="flex-1 grid md:grid-cols-12 gap-8 px-5 md:px-8 py-10 overflow-hidden">
+      <div className="flex-1 grid md:grid-cols-12 gap-8 px-5 md:px-8 py-10 overflow-y-auto overflow-x-hidden">
         <nav className="md:col-span-8 flex flex-col justify-center gap-2">
           {links.map(([l, h], i) => (
             <a key={h} href={h} onClick={onClose} className="block overflow-hidden">

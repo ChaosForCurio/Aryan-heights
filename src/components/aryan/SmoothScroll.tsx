@@ -19,17 +19,41 @@ export const SmoothScroll = () => {
     gsap.ticker.add(raf);
     gsap.ticker.lagSmoothing(0);
 
+    // If there's a hash in the URL on load, scroll to it
+    if (window.location.hash) {
+      const id = window.location.hash.substring(1);
+      const element = document.getElementById(id);
+      if (element) {
+        setTimeout(() => {
+          // @ts-ignore
+          lenis.scrollTo(element, { offset: 0, duration: 0, immediate: true });
+        }, 100);
+      }
+    }
+
     // Smooth anchor scrolling
     const handleAnchorClick = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
       const anchor = target.closest("a");
-      if (anchor && anchor.getAttribute("href")?.startsWith("#")) {
-        const id = anchor.getAttribute("href")?.substring(1);
-        const element = document.getElementById(id || "");
-        if (element) {
-          e.preventDefault();
-          // @ts-ignore
-          lenis.scrollTo(element, { offset: 0, duration: 2 });
+      if (anchor) {
+        const href = anchor.getAttribute("href");
+        if (href && (href.startsWith("#") || href.startsWith("/#"))) {
+          const isHomeLink = href.startsWith("/#");
+          const hashIndex = href.indexOf("#");
+          const id = href.substring(hashIndex + 1);
+
+          // If it's a home link (/#something) but we're not on the home page, 
+          // let the browser handle the navigation naturally.
+          if (isHomeLink && window.location.pathname !== "/") {
+            return;
+          }
+
+          const element = document.getElementById(id);
+          if (element) {
+            e.preventDefault();
+            // @ts-ignore
+            lenis.scrollTo(element, { offset: 0, duration: 2 });
+          }
         }
       }
     };
