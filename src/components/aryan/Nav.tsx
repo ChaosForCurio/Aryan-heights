@@ -1,8 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 import logo from "@/assets/logo.png";
 import { FullscreenMenu } from "./FullscreenMenu";
 import { useTheme } from "@/context/ThemeContext";
+import { useBooking } from "@/context/BookingContext";
+import { useMagnetic } from "@/hooks/useMagnetic";
+import { gsap } from "gsap";
 
 const SunIcon = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -31,8 +34,16 @@ export const Nav = () => {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const { theme, toggle } = useTheme();
+  const { openBooking } = useBooking();
   const location = useLocation();
   const isRoomsPage = location.pathname === "/rooms";
+
+  const logoRef = useMagnetic<HTMLAnchorElement>(0.2);
+  const themeRef = useMagnetic<HTMLButtonElement>(0.3);
+  const bookRef = useMagnetic<HTMLAnchorElement>(0.3);
+  const menuRef = useMagnetic<HTMLButtonElement>(0.35);
+
+  const transitionOverlayRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60);
@@ -40,8 +51,47 @@ export const Nav = () => {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  const handleThemeToggle = (e: React.MouseEvent) => {
+    if (!transitionOverlayRef.current) {
+      toggle();
+      return;
+    }
+
+    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+    const x = rect.left + rect.width / 2;
+    const y = rect.top + rect.height / 2;
+
+    const tl = gsap.timeline();
+    
+    tl.to(transitionOverlayRef.current, {
+      clipPath: `circle(150% at ${x}px ${y}px)`,
+      duration: 0.8,
+      ease: "power3.inOut",
+      onStart: () => {
+        transitionOverlayRef.current!.style.opacity = "1";
+      },
+      onComplete: () => {
+        toggle();
+        gsap.to(transitionOverlayRef.current, {
+          opacity: 0,
+          clipPath: `circle(0% at ${x}px ${y}px)`,
+          duration: 0.6,
+          ease: "power3.inOut",
+          delay: 0.1
+        });
+      }
+    });
+  };
+
   return (
     <>
+      {/* Theme Transition Overlay */}
+      <div 
+        ref={transitionOverlayRef}
+        className="fixed inset-0 z-[100] pointer-events-none bg-background opacity-0"
+        style={{ clipPath: "circle(0% at 50% 50%)" }}
+      />
+
       <header
         className={`fixed top-0 left-0 right-0 z-40 transition-all duration-700 ${
           scrolled
@@ -52,7 +102,7 @@ export const Nav = () => {
         <div className="max-w-[1700px] mx-auto px-5 md:px-8 flex items-center justify-between gap-6">
 
           {/* ── Logo ── */}
-          <Link to="/" className="flex items-center gap-3 group" data-cursor>
+          <Link ref={logoRef} to="/" className="flex items-center gap-3 group" data-cursor>
             <div className="relative overflow-hidden rounded-full w-12 h-12 flex items-center justify-center">
               <img
                 src={logo}
@@ -94,29 +144,35 @@ export const Nav = () => {
           <div className="flex items-center gap-3">
             {/* Theme toggle */}
             <button
-              onClick={toggle}
+              ref={themeRef}
+              onClick={handleThemeToggle}
               aria-label="Toggle theme"
               title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
               className="w-9 h-9 rounded-full border border-hairline flex items-center justify-center text-foreground/70 hover:text-foreground hover:border-maroon hover:bg-surface transition-all duration-300"
             >
-              <span className="transition-all duration-300">
+              <span className="transition-all duration-300 pointer-events-none">
                 {theme === "dark" ? <SunIcon /> : <MoonIcon />}
               </span>
             </button>
 
-            <a
-              href="https://wa.me/919829000000"
+            <button
+              onClick={() => openBooking()}
               className="hidden sm:inline-flex items-center gap-2 text-sm text-foreground/70 hover:text-maroon transition-colors duration-300"
             >
               Enquire
-            </a>
+            </button>
 
-            <Link to="/rooms" className="btn-pill text-xs hidden sm:inline-flex">
+            <button 
+              ref={bookRef} 
+              onClick={() => openBooking()}
+              className="btn-pill text-xs hidden sm:inline-flex"
+            >
               Book a Visit
-            </Link>
+            </button>
 
             {/* Hamburger */}
             <button
+              ref={menuRef}
               onClick={() => setOpen(true)}
               aria-label="Open menu"
               className="w-9 h-9 rounded-full border border-hairline flex flex-col items-center justify-center gap-[5px] hover:bg-surface hover:border-maroon transition-all duration-300 group"
@@ -132,3 +188,5 @@ export const Nav = () => {
     </>
   );
 };
+
+

@@ -3,6 +3,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Link } from "react-router-dom";
 import { Nav } from "@/components/aryan/Nav";
+import { useBooking } from "@/context/BookingContext";
 import { Cursor } from "@/components/aryan/Cursor";
 import { SmoothScroll } from "@/components/aryan/SmoothScroll";
 import roomSingleImg from "@/assets/room-single.jpg";
@@ -91,6 +92,7 @@ function splitChars(el: HTMLElement): HTMLElement[] {
 /* ─── Page ────────────────────────────────────────────────── */
 const RoomsPage = () => {
   const pageRef = useRef<HTMLDivElement>(null);
+  const { openBooking } = useBooking();
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -218,10 +220,12 @@ const RoomsPage = () => {
 
           {/* Bottom CTA */}
           <div className="h-fade flex flex-col gap-4">
-            <a href="#room-01"
-              className="group inline-flex items-center gap-4 bg-maroon text-ivory px-7 py-4 rounded-full text-xs font-bold tracking-[0.18em] uppercase transition-all duration-300 hover:bg-ivory hover:text-[#13141a] self-start">
+            <button 
+              onClick={() => openBooking()}
+              className="group inline-flex items-center gap-4 bg-maroon text-ivory px-7 py-4 rounded-full text-xs font-bold tracking-[0.18em] uppercase transition-all duration-300 hover:bg-ivory hover:text-[#13141a] self-start"
+            >
               Explore Rooms <span className="transition-transform group-hover:translate-x-1"><ArrowRight size={16} /></span>
-            </a>
+            </button>
             <Link to="/"
               className="text-white/35 text-[0.65rem] tracking-widest uppercase hover:text-white/70 transition-colors">
               ← Back to Home
@@ -312,10 +316,12 @@ const RoomsPage = () => {
                     <div className="font-display text-2xl tracking-tighter">₹9,500</div>
                     <div className="eyebrow text-foreground/40 text-[0.55rem] mt-0.5">per month</div>
                   </div>
-                  <a href="/#contact"
-                    className="group/btn inline-flex items-center gap-2 bg-foreground text-background px-4 py-2.5 rounded-full text-[0.65rem] font-bold tracking-widest uppercase transition-all duration-300 hover:bg-maroon hover:text-ivory">
+                  <button 
+                    onClick={() => openBooking("twin")}
+                    className="group/btn inline-flex items-center gap-2 bg-foreground text-background px-4 py-2.5 rounded-full text-[0.65rem] font-bold tracking-widest uppercase transition-all duration-300 hover:bg-maroon hover:text-ivory"
+                  >
                     Reserve <span className="transition-transform group-hover/btn:translate-x-1"><ArrowRight size={12} /></span>
-                  </a>
+                  </button>
                 </div>
               </div>
             </article>
@@ -357,10 +363,12 @@ const RoomsPage = () => {
                     <div className="font-display text-2xl tracking-tighter">₹16,500</div>
                     <div className="eyebrow text-white/35 text-[0.55rem] mt-0.5">per month</div>
                   </div>
-                  <a href="/#contact"
-                    className="group/btn inline-flex items-center gap-2 bg-ivory text-[#13141a] px-4 py-2.5 rounded-full text-[0.65rem] font-bold tracking-widest uppercase transition-all duration-300 hover:bg-maroon hover:text-ivory">
+                  <button 
+                    onClick={() => openBooking("single")}
+                    className="group/btn inline-flex items-center gap-2 bg-ivory text-[#13141a] px-4 py-2.5 rounded-full text-[0.65rem] font-bold tracking-widest uppercase transition-all duration-300 hover:bg-maroon hover:text-ivory"
+                  >
                     Reserve <span className="transition-transform group-hover/btn:translate-x-1"><ArrowRight size={12} /></span>
-                  </a>
+                  </button>
                 </div>
               </div>
             </article>
@@ -405,10 +413,12 @@ const RoomsPage = () => {
                     <div className="font-display text-2xl tracking-tighter">₹22,000</div>
                     <div className="eyebrow text-foreground/40 text-[0.55rem] mt-0.5">per month · all inclusive</div>
                   </div>
-                  <a href="/#contact"
-                    className="group/btn inline-flex items-center gap-2 bg-foreground text-background px-4 py-2.5 rounded-full text-[0.65rem] font-bold tracking-widest uppercase transition-all duration-300 hover:bg-maroon hover:text-ivory">
+                  <button 
+                    onClick={() => openBooking("suite")}
+                    className="group/btn inline-flex items-center gap-2 bg-foreground text-background px-4 py-2.5 rounded-full text-[0.65rem] font-bold tracking-widest uppercase transition-all duration-300 hover:bg-maroon hover:text-ivory"
+                  >
                     Reserve <span className="transition-transform group-hover/btn:translate-x-1"><ArrowRight size={12} /></span>
-                  </a>
+                  </button>
                 </div>
               </div>
             </article>
@@ -465,11 +475,13 @@ const RoomsPage = () => {
               Rates subject to availability. No deposit surprises.
             </p>
             {/* CTA — word reveal */}
-            <a href="/#contact"
-              className="group inline-flex items-center gap-4 bg-maroon text-ivory px-8 py-4 rounded-full text-xs font-bold tracking-[0.18em] uppercase transition-all duration-300 hover:bg-foreground hover:text-background flex-shrink-0">
+            <button 
+              onClick={() => openBooking()}
+              className="group inline-flex items-center gap-4 bg-maroon text-ivory px-8 py-4 rounded-full text-xs font-bold tracking-[0.18em] uppercase transition-all duration-300 hover:bg-foreground hover:text-background flex-shrink-0"
+            >
               <span className="scroll-word-reveal">Book a Visit Today</span>
               <span className="transition-transform group-hover:translate-x-1"><ArrowRight size={16} /></span>
-            </a>
+            </button>
           </div>
 
         </div>
